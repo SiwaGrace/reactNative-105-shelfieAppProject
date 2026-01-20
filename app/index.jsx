@@ -14,7 +14,7 @@ const index = () => {
       <Spacer height={20} />
 
       <ThemedText style={styles.title} title={true}>
-        The Number 1
+        The Number 1 h
       </ThemedText>
 
       <Spacer height={10} />
