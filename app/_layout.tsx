@@ -14,8 +14,16 @@ const RootLayout = () => {
         screenOptions={{
           headerStyle: { backgroundColor: theme.navBackground },
           headerTintColor: theme.title,
+          headerTitleAlign: "center",
         }}
       >
+        <Stack.Screen
+          name="index"
+          options={{
+            title: "Home",
+            //  headerShown: false
+          }}
+        />
         <Stack.Screen
           name="(auth)"
           options={{
@@ -23,10 +31,9 @@ const RootLayout = () => {
           }}
         />
         <Stack.Screen
-          name="index"
+          name="(dashboard)"
           options={{
-            title: "Home",
-            //  headerShown: false
+            headerShown: false,
           }}
         />
       </Stack>

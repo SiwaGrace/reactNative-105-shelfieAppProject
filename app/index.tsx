@@ -12,9 +12,27 @@ const Home = () => {
       <ThemedLogo style={{ width: 100, height: 100 }} />
       <Spacer height={20} />
 
-      <ThemedText title={true}>Hello word</ThemedText>
+      <ThemedText title={true} style={styles.title}>
+        The Number 1
+      </ThemedText>
+      <ThemedText>Reading List App</ThemedText>
+
+      <Spacer />
+
       <Link href="/login">
-        <ThemedText>login</ThemedText>
+        <ThemedText style={styles.link}>login</ThemedText>
+      </Link>
+
+      <Spacer height={10} />
+
+      <Link href="/login">
+        <ThemedText style={styles.link}>Register </ThemedText>
+      </Link>
+
+      <Spacer height={10} />
+
+      <Link href="/profile">
+        <ThemedText style={styles.link}>profile </ThemedText>
       </Link>
     </ThemedView>
   );
@@ -27,5 +45,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  title: {
+    fontWeight: "bold",
+    fontSize: 20,
+  },
+  link: {
+    textDecorationLine: "underline",
   },
 });

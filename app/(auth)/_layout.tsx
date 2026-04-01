@@ -12,6 +12,7 @@ const _layout = () => {
       screenOptions={{
         headerStyle: { backgroundColor: theme.navBackground },
         headerTintColor: theme.title,
+        headerShown: false,
       }}
     />
   );
