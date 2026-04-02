@@ -1,3 +1,4 @@
+import GuessOnly from "@/components/auth/GuessOnly";
 import { Colors } from "@/constant/colors";
 import { Stack } from "expo-router";
 import React from "react";
@@ -8,13 +9,15 @@ const _layout = () => {
   const theme = Colors[colorScheme];
   console.log(colorScheme);
   return (
-    <Stack
-      screenOptions={{
-        headerStyle: { backgroundColor: theme.navBackground },
-        headerTintColor: theme.title,
-        headerShown: false,
-      }}
-    />
+    <GuessOnly>
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: theme.navBackground },
+          headerTintColor: theme.title,
+          headerShown: false,
+        }}
+      />
+    </GuessOnly>
   );
 };
 

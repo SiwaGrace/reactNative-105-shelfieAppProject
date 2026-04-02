@@ -1,4 +1,4 @@
-import { Account, Avatars, Client } from "react-native-appwrite";
+import { Account, Avatars, Client, TablesDB } from "react-native-appwrite";
 // Init your React Native SDK
 const client = new Client();
 
@@ -9,4 +9,5 @@ client
 
 export const account = new Account(client);
 export const avatars = new Avatars(client);
+export const tables = new TablesDB(client);
 export default client;

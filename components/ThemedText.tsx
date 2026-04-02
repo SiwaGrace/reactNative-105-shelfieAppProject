@@ -4,7 +4,7 @@ import { Text, useColorScheme } from "react-native";
 
 export type ThemedTextProps = {
   style?: any;
-  children: string;
+  children: any;
   title?: boolean;
 };
 

@@ -4,6 +4,7 @@ import ThemedText from "@/components/ThemedText";
 import ThemedTextInput from "@/components/ThemedTextInput";
 import ThemedView from "@/components/ThemedView";
 import { Colors } from "@/constant/colors";
+import { useUser } from "@/hooks/useUser";
 import { Link } from "expo-router";
 import React from "react";
 import {
@@ -16,9 +17,17 @@ import {
 const login = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [error, setError] = React.useState(null);
+
+  const { login } = useUser();
 
   const handleSubmit = () => {
-    console.log("login submitted" + email + " " + password);
+    try {
+      login(email, password);
+      console.log("Login successful");
+    } catch (error: any) {
+      setError(error.message);
+    }
   };
 
   return (
@@ -55,7 +64,12 @@ const login = () => {
           <Text style={{ color: "white" }}>Login</Text>
         </ThemedButton>
 
+        <Spacer />
+        {error && (
+          <ThemedText style={{ color: Colors.warning }}>{error}</ThemedText>
+        )}
         <Spacer height={80} />
+
         <Link href="/register">
           <ThemedText>Register instead</ThemedText>
         </Link>
