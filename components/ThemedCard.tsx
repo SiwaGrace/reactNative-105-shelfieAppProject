@@ -3,7 +3,7 @@ import React from "react";
 import { StyleSheet, useColorScheme, View } from "react-native";
 
 export type ThemedCardProps = {
-  style: any;
+  style?: any;
   children: React.ReactNode;
 };
 const ThemedCard = ({ style, ...props }: ThemedCardProps) => {

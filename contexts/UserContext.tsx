@@ -3,7 +3,7 @@ import { createContext, useEffect, useState } from "react";
 import { ID } from "react-native-appwrite";
 
 type User = {
-  id?: string;
+  $id?: string;
   email?: string;
   name?: string;
 } | null;

@@ -24,7 +24,6 @@ const login = () => {
   const handleSubmit = () => {
     try {
       login(email, password);
-      console.log("Login successful");
     } catch (error: any) {
       setError(error.message);
     }

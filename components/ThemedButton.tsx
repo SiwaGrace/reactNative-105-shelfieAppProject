@@ -6,6 +6,7 @@ type ThemedButtonProps = {
   children: React.ReactNode;
   onPress?: () => void;
   style?: any;
+  disabled?: boolean;
 };
 
 const ThemedButton = ({ style, ...props }: ThemedButtonProps) => {

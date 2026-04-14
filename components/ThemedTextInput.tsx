@@ -10,6 +10,7 @@ export type ThemedTextInputProps = {
   value: string;
   secureTextEntry?: boolean;
   placeholderTextColor?: string;
+  multiline?: boolean;
 };
 const ThemedTextInput = ({ style, ...props }: ThemedTextInputProps) => {
   const colorScheme = useColorScheme() ?? "light";
@@ -26,6 +27,7 @@ const ThemedTextInput = ({ style, ...props }: ThemedTextInputProps) => {
         },
         style,
       ]}
+      placeholderTextColor={theme.text}
       {...props}
     />
   );
