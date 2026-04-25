@@ -1,5 +1,6 @@
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import ThemedText from "./ThemedText";
+import ThemedView from "./ThemedView";
 
 type FilterTabsProps<T extends string> = {
   options: readonly T[];
@@ -13,7 +14,7 @@ function FilterTabs<T extends string>({
   onChange,
 }: FilterTabsProps<T>) {
   return (
-    <View style={styles.container}>
+    <ThemedView style={styles.container}>
       {options.map((option) => {
         const isActive = value === option;
 
@@ -29,7 +30,7 @@ function FilterTabs<T extends string>({
           </TouchableOpacity>
         );
       })}
-    </View>
+    </ThemedView>
   );
 }
 
@@ -41,7 +42,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flexDirection: "row",
-    backgroundColor: "#1e1e1e", // surface-container-low
     padding: 6,
     borderRadius: 999,
     gap: 6,
@@ -58,7 +58,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#aaa", // on-surface-variant
   },
   activeText: {
     color: "#fff", // secondary/on-surface

@@ -1,3 +1,4 @@
+import { Colors } from "@/constant/colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Pressable, View } from "react-native";
 
@@ -9,7 +10,7 @@ const RatingInput = ({ rating, setRating }: any) => {
           <Ionicons
             name={star <= rating ? "star" : "star-outline"}
             size={28}
-            color="#FFD700"
+            color={Colors.star}
           />
         </Pressable>
       ))}

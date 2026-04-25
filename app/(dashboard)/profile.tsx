@@ -1,109 +1,22 @@
+import MediaCard from "@/components/MediaCard";
 import Spacer from "@/components/Spacer";
 import ThemedButton from "@/components/ThemedButton";
+import ThemedStatCard from "@/components/ThemedStatCard";
 import ThemedText from "@/components/ThemedText";
 import ThemedView from "@/components/ThemedView";
 import { Colors } from "@/constant/colors";
 import { useMedia } from "@/hooks/useMedia";
 import { useUser } from "@/hooks/useUser";
-import { MediaItem } from "@/types/media";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
-  Dimensions,
   FlatList,
-  Image,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
 } from "react-native";
 
-const { width } = Dimensions.get("window");
-const CARD_WIDTH = width * 0.36;
-
-// ── tiny helpers ──────────────────────────────────────────
-const typeColor: Record<string, string> = {
-  book: "#de4bf4",
-  anime: "#53ddfc",
-  manhwa: "#ba9eff",
-};
-
-const typeIcon: Record<string, string> = {
-  book: "📖",
-  anime: "🎬",
-  manhwa: "📚",
-};
-
-const timeAgo = (dateStr?: string) => {
-  if (!dateStr) return "";
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const h = Math.floor(diff / 36e5);
-  if (h < 24) return `Added ${h}h ago`;
-  const d = Math.floor(h / 24);
-  if (d === 1) return "Added yesterday";
-  return `Added ${d}d ago`;
-};
-
-// ── stat card ─────────────────────────────────────────────
-const StatCard = ({
-  label,
-  count,
-  icon,
-  color,
-}: {
-  label: string;
-  count: number;
-  icon: string;
-  color: string;
-}) => (
-  <View style={[styles.statCard, { flex: 1 }]}>
-    <View>
-      <ThemedText style={styles.statLabel}>{label}</ThemedText>
-      <ThemedText style={styles.statCount}>{count}</ThemedText>
-    </View>
-    <View style={[styles.statIcon, { backgroundColor: color + "22" }]}>
-      <ThemedText style={{ fontSize: 22 }}>{icon}</ThemedText>
-    </View>
-  </View>
-);
-
-// ── recently added card ───────────────────────────────────
-const MediaCard = ({ item }: { item: MediaItem }) => {
-  const color = typeColor[item.type] ?? "#ba9eff";
-  return (
-    <View style={styles.mediaCard}>
-      <View style={styles.mediaCover}>
-        {item.image ? (
-          <Image
-            source={{ uri: item.image }}
-            style={StyleSheet.absoluteFillObject}
-            resizeMode="cover"
-          />
-        ) : (
-          <View
-            style={[
-              styles.mediaCoverPlaceholder,
-              { backgroundColor: color + "33" },
-            ]}
-          >
-            <ThemedText style={{ fontSize: 28 }}>
-              {typeIcon[item.type]}
-            </ThemedText>
-          </View>
-        )}
-      </View>
-      <ThemedText style={styles.mediaTitle} numberOfLines={1}>
-        {item.title}
-      </ThemedText>
-      <ThemedText style={styles.mediaSub}>
-        {item.type.charAt(0).toUpperCase() + item.type.slice(1)} •{" "}
-        {timeAgo(item.$createdAt)}
-      </ThemedText>
-    </View>
-  );
-};
-
-// ── main screen ───────────────────────────────────────────
 const Profile = () => {
   const { logout, user } = useUser();
   const { mediaList } = useMedia(); // all user media
@@ -149,13 +62,28 @@ const Profile = () => {
         {/* ── stats bento ── */}
         <View style={styles.section}>
           <View style={styles.row}>
-            <StatCard label="Books" count={books} icon="📖" color="#de4bf4" />
-            <StatCard label="Anime" count={anime} icon="🎬" color="#53ddfc" />
+            <ThemedStatCard
+              label="Books"
+              count={books}
+              icon="📖"
+              color="#de4bf4"
+            />
+            <ThemedStatCard
+              label="Anime"
+              count={anime}
+              icon="🎬"
+              color="#53ddfc"
+            />
           </View>
           <Spacer />
           <View style={styles.row}>
-            <StatCard label="Manhwa" count={manhwa} icon="📚" color="#ba9eff" />
-            <StatCard
+            <ThemedStatCard
+              label="Manhwa"
+              count={manhwa}
+              icon="📚"
+              color="#ba9eff"
+            />
+            <ThemedStatCard
               label="Total"
               count={mediaList.length}
               icon="🗂️"
@@ -187,7 +115,7 @@ const Profile = () => {
         {/* ── account ── */}
         <View style={styles.section}>
           <ThemedText style={styles.sectionTitle}>Account</ThemedText>
-          <View style={styles.accountCard}>
+          <ThemedView style={styles.accountCard}>
             <View style={styles.avatar}>
               <ThemedText style={styles.avatarLetter}>
                 {// user?.name ??
@@ -200,7 +128,7 @@ const Profile = () => {
               )}
               <ThemedText style={styles.accountEmail}>{user?.email}</ThemedText>
             </View>
-          </View>
+          </ThemedView>
         </View>
 
         {/* ── logout ── */}
@@ -261,48 +189,11 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
 
-  // stats
-  statCard: {
-    backgroundColor: "#141f38",
-    borderRadius: 14,
-    padding: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  statLabel: { fontSize: 12, color: "#a3aac4", marginBottom: 4 },
-  statCount: { fontSize: 26, fontWeight: "800" },
-  statIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 99,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  // media cards
-  mediaCard: { width: CARD_WIDTH },
-  mediaCover: {
-    aspectRatio: 2 / 3,
-    borderRadius: 12,
-    overflow: "hidden",
-    marginBottom: 8,
-    backgroundColor: "#141f38",
-  },
-  mediaCoverPlaceholder: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  mediaTitle: { fontSize: 13, fontWeight: "700" },
-  mediaSub: { fontSize: 11, color: "#a3aac4", marginTop: 2 },
-
   // account
   accountCard: {
     flexDirection: "row",
     alignItems: "center",
     gap: 14,
-    backgroundColor: "#141f38",
     borderRadius: 14,
     padding: 16,
   },

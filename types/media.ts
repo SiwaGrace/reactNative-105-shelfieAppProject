@@ -21,10 +21,8 @@ export type MediaItem = {
 
   tags?: string[];
 
-  metadata?: {
-    episodes?: number; // anime
-    chapters?: number; // manhwa
-  };
+  episodes?: number;
+  chapters?: number;
 
   userId: string;
 

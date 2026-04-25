@@ -1,7 +1,8 @@
-import { Colors } from "@/constant/colors";
 import * as ImagePicker from "expo-image-picker";
 import React from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
+import ThemedText from "./ThemedText";
+import ThemedTouchableOpacity from "./ThemedTouchableOpacity";
 
 type Props = {
   image: string | null;
@@ -31,7 +32,7 @@ const MediaImagePicker = ({ image, onImageSelect }: Props) => {
   };
 
   return (
-    <TouchableOpacity
+    <ThemedTouchableOpacity
       style={styles.container}
       onPress={handlePick}
       activeOpacity={0.8}
@@ -41,19 +42,21 @@ const MediaImagePicker = ({ image, onImageSelect }: Props) => {
         <>
           <Image source={{ uri: image }} style={styles.preview} />
           <View style={styles.overlay}>
-            <Text style={styles.changeText}>Tap to change</Text>
+            <ThemedText style={styles.changeText}>Tap to change</ThemedText>
           </View>
         </>
       ) : (
         // ✅ Empty state — matches HTML design
         <>
           <View style={styles.gradient} />
-          <Text style={styles.icon}>🖼️</Text>
-          <Text style={styles.mainText}>Upload Cover Art</Text>
-          <Text style={styles.subText}>Recommended: 1200 x 675px</Text>
+          <ThemedText style={styles.icon}>🖼️</ThemedText>
+          <ThemedText style={styles.mainText}>Upload Cover Art</ThemedText>
+          <ThemedText style={styles.subText}>
+            Recommended: 1200 x 675px
+          </ThemedText>
         </>
       )}
-    </TouchableOpacity>
+    </ThemedTouchableOpacity>
   );
 };
 
@@ -67,7 +70,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderStyle: "dashed",
     borderColor: "rgba(150,150,150,0.4)",
-    backgroundColor: "#1e1e2e", // surface-container-low equivalent
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
@@ -75,7 +77,6 @@ const styles = StyleSheet.create({
   },
   gradient: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: Colors.primary,
     opacity: 0.08, // subtle background tint like your HTML gradient
   },
   icon: {
@@ -83,12 +84,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   mainText: {
-    color: "#cdd6f4",
+    // color: "#cdd6f4",
     fontWeight: "600",
     fontSize: 15,
   },
   subText: {
-    color: "#7f849c",
+    // color: "#7f849c",
     fontSize: 11,
     marginTop: 4,
   },

@@ -81,7 +81,7 @@ const Create = () => {
   const handleSubmit = async () => {
     setLoading(true);
 
-    if (!title || !description) {
+    if (!title || !type || !status) {
       alert("Please fill required fields");
       setLoading(false);
       return;
@@ -104,10 +104,8 @@ const Create = () => {
       rating: ratings,
       tags,
       image: image ?? undefined,
-      metadata: {
-        episodes: type === "anime" ? metadata : undefined,
-        chapters: type !== "anime" ? metadata : undefined,
-      },
+      episodes: type === "anime" ? metadata : undefined,
+      chapters: type !== "anime" ? metadata : undefined,
     });
 
     setTitle("");
@@ -144,7 +142,15 @@ const Create = () => {
             value={title}
             onChangeText={setTitle}
           />
-          {/* inputs */}
+
+          <Spacer />
+          <ThemedTextInput
+            style={styles.input}
+            placeholder="Author"
+            value={author}
+            onChangeText={setAuthor}
+          />
+
           <Spacer />
           <ThemedTextInput
             style={styles.input}
@@ -155,15 +161,12 @@ const Create = () => {
           />
 
           <Spacer />
-
-          <MediaImagePicker image={image} onImageSelect={setImage} />
-          <Spacer />
-
-          <ThemedTextInput
+          <ThemedTextSelect
+            label="Type"
+            value={type}
+            options={MEDIA_TYPES}
+            onChange={handleTypeChange}
             style={styles.input}
-            placeholder="Author"
-            value={author}
-            onChangeText={setAuthor}
           />
 
           <Spacer />
@@ -177,15 +180,6 @@ const Create = () => {
             value={metadata === 0 ? "" : String(metadata)}
             onChangeText={(text) => setMetadata(Number(text))}
             keyboardType="numeric"
-          />
-
-          <Spacer />
-          <ThemedTextSelect
-            label="Type"
-            value={type}
-            options={MEDIA_TYPES}
-            onChange={handleTypeChange}
-            style={styles.input}
           />
 
           <Spacer />
@@ -230,6 +224,9 @@ const Create = () => {
               ))}
             </View>
           )}
+
+          <Spacer />
+          <MediaImagePicker image={image} onImageSelect={setImage} />
 
           <Spacer />
           <ThemedButton

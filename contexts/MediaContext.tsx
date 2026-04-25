@@ -7,7 +7,7 @@ import client, { db } from "../lib/appwrite";
 
 export type CreateMediaInput = {
   title: string;
-  description: string;
+  description?: string;
   author?: string;
   type: MediaType;
   status: MediaStatus;
@@ -15,10 +15,8 @@ export type CreateMediaInput = {
   link?: string;
   rating?: number;
   tags?: string[];
-  metadata?: {
-    episodes?: number;
-    chapters?: number;
-  };
+  episodes?: number;
+  chapters?: number;
 };
 const DATABASE_ID = process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID;
 const MEDIA_COLLECTION_ID =
@@ -28,6 +26,9 @@ type MediaContextType = {
   mediaList: MediaItem[];
   fetchMedia: () => Promise<void>;
   createMedia: (data: CreateMediaInput) => Promise<void>;
+  fetchMediaById: (id: string) => Promise<MediaItem | null>;
+  deleteMedia: (id: string) => Promise<void>;
+  // updateMedia: (id: string, data: CreateMediaInput) => Promise<void>;
 };
 
 export const MediaContext = createContext<MediaContextType | undefined>(
@@ -48,10 +49,24 @@ export const MediaProvider = ({ children }: any) => {
       });
 
       const data: MediaItem[] = response.rows.map(mapRowToMedia);
-      console.log("media collection", data);
+      // console.log("media collection", data);
       setMediaList(data);
     } catch (error) {
       console.error("Error fetching Media:", error);
+    }
+  }
+
+  async function fetchMediaById(id: string): Promise<MediaItem | null> {
+    try {
+      const response = await db.getRow({
+        databaseId: DATABASE_ID!,
+        tableId: MEDIA_COLLECTION_ID!,
+        rowId: id,
+      });
+      return mapRowToMedia(response);
+    } catch (error) {
+      console.error("Error fetching media by ID:", error);
+      return null;
     }
   }
 
@@ -73,9 +88,17 @@ export const MediaProvider = ({ children }: any) => {
         ],
       });
 
-      //   return newMedia;
+      // return newMedia;
     } catch (error) {
       console.error("Error creating media:", error);
+    }
+  }
+
+  async function deleteMedia(id: string) {
+    try {
+      await db.deleteRow(DATABASE_ID!, MEDIA_COLLECTION_ID!, id);
+    } catch (error) {
+      console.error("Error deleting media:", error);
     }
   }
 
@@ -96,14 +119,14 @@ export const MediaProvider = ({ children }: any) => {
 
         if (events.some((e) => e.includes("update"))) {
           setMediaList((prev) =>
-            prev.map((book) =>
-              book.$id === row.$id ? mapRowToMedia(row) : book,
+            prev.map((media) =>
+              media.$id === row.$id ? mapRowToMedia(row) : media,
             ),
           );
         }
 
         if (events.some((e) => e.includes("delete"))) {
-          setMediaList((prev) => prev.filter((book) => book.$id !== row.$id));
+          setMediaList((prev) => prev.filter((media) => media.$id !== row.$id));
         }
       });
     } else {
@@ -116,7 +139,15 @@ export const MediaProvider = ({ children }: any) => {
   }, [user]);
 
   return (
-    <MediaContext.Provider value={{ mediaList, fetchMedia, createMedia }}>
+    <MediaContext.Provider
+      value={{
+        mediaList,
+        fetchMedia,
+        createMedia,
+        fetchMediaById,
+        deleteMedia,
+      }}
+    >
       {children}
     </MediaContext.Provider>
   );

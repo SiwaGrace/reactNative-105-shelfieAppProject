@@ -8,7 +8,7 @@ import {
 
 export type ThemedViewProps = {
   style?: any;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   safe?: boolean;
 };
 const ThemedView = ({ style, safe, ...props }: ThemedViewProps) => {
