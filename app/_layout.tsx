@@ -1,5 +1,5 @@
 import { Colors } from "@/constant/colors";
-import { BookProvider } from "@/contexts/BooksContext";
+import { MediaProvider } from "@/contexts/MediaContext";
 import { UserProvider } from "@/contexts/UserContext";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -11,7 +11,7 @@ const RootLayout = () => {
   console.log(colorScheme);
   return (
     <UserProvider>
-      <BookProvider>
+      <MediaProvider>
         <StatusBar style="auto" />
         <Stack
           screenOptions={{
@@ -40,7 +40,7 @@ const RootLayout = () => {
             }}
           />
         </Stack>
-      </BookProvider>
+      </MediaProvider>
     </UserProvider>
   );
 };

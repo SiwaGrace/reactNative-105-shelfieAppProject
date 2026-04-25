@@ -6,6 +6,7 @@ export type ThemedTextProps = {
   style?: any;
   children: any;
   title?: boolean;
+  numberOfLines?: number;
 };
 
 const ThemedText = ({ style, title, ...props }: ThemedTextProps) => {

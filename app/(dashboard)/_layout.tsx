@@ -35,7 +35,7 @@ const DashboardLayout = () => {
             ),
           }}
         />
-        <Tabs.Screen
+        {/* <Tabs.Screen
           name="books"
           options={{
             title: "Books",
@@ -47,7 +47,7 @@ const DashboardLayout = () => {
               />
             ),
           }}
-        />
+        /> */}
         <Tabs.Screen
           name="create"
           options={{
@@ -62,7 +62,26 @@ const DashboardLayout = () => {
           }}
         />
         <Tabs.Screen
+          name="library"
+          options={{
+            title: "Library",
+            tabBarIcon: ({ focused }) => (
+              <Ionicons
+                name={focused ? "library" : "library-outline"}
+                size={24}
+                color={focused ? theme.iconColorFocused : theme.iconColor}
+              />
+            ),
+          }}
+        />
+        {/* <Tabs.Screen
           name="books/[id]"
+          options={{
+            href: null,
+          }}
+        /> */}
+        <Tabs.Screen
+          name="media/[id]"
           options={{
             href: null,
           }}
