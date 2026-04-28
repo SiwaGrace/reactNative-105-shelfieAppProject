@@ -4,7 +4,12 @@ import ThemedText from "@/components/ThemedText";
 import ThemedTextInput from "@/components/ThemedTextInput";
 import ThemedView from "@/components/ThemedView";
 import { useMedia } from "@/hooks/useMedia";
-import { MEDIA_TYPES, MediaType } from "@/types/media";
+import {
+  MEDIA_STATUS,
+  MEDIA_TYPES,
+  MediaStatus,
+  MediaType,
+} from "@/types/media";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -27,22 +32,24 @@ const Library = () => {
   const [selectedType, setSelectedType] = useState<MediaType>("book");
   const [search, setSearch] = useState("");
 
+  const STATUS_OPTIONS = ["all", ...MEDIA_STATUS] as const;
+  type StatusFilter = "all" | MediaStatus;
+  const [selectedStatus, setSelectedStatus] = useState<StatusFilter>("planned");
+
   const filteredMedia = mediaList
     .filter((item) => item.type?.toLocaleLowerCase() === selectedType)
-    .filter((item) => item.title.toLowerCase().includes(search.toLowerCase()));
-
-  const handleSearch = () => {};
+    .filter((item) => item.title.toLowerCase().includes(search.toLowerCase()))
+    .filter((item) =>
+      selectedStatus === "all"
+        ? true
+        : item.status?.toLocaleLowerCase() === selectedStatus,
+    );
 
   return (
     <ThemedView safe={true} style={styles.container}>
       <ThemedText style={styles.heading}>Your Library</ThemedText>
 
       <Spacer height={16} />
-      {/* <MediaFilterTabs
-        value={selectedType}
-        onChange={setSelectedType}
-        // options={MEDIA_TYPES}
-      /> */}
       <FilterTabs
         value={selectedType}
         onChange={setSelectedType}
@@ -55,6 +62,13 @@ const Library = () => {
         icon={true}
         placeholder="Search by title..."
         onChangeText={setSearch}
+      />
+
+      <Spacer height={16} />
+      <FilterTabs
+        value={selectedStatus}
+        onChange={setSelectedStatus}
+        options={STATUS_OPTIONS}
       />
 
       <Spacer height={16} />
@@ -87,12 +101,11 @@ const Library = () => {
               {/* Cover Image with overlay */}
               <View style={styles.imageContainer}>
                 <Image
-                  // source={
-                  //   item.coverImage
-                  //     ? { uri: item.coverImage }
-                  //     : require("@/assets/images/android-icon-background.png")
-                  // }
-                  source={require("@/assets/images/book.jpg")}
+                  source={
+                    item.image
+                      ? { uri: item.image }
+                      : require("@/assets/images/book.jpg")
+                  }
                   style={styles.coverImage}
                   resizeMode="cover"
                 />
@@ -102,9 +115,7 @@ const Library = () => {
                   colors={["transparent", "rgba(0,0,0,0.8)"]}
                   style={styles.gradient}
                 />
-
                 {/* Status badge */}
-
                 {item.status && (
                   <View style={styles.badge}>
                     <ThemedText style={styles.badgeText}>

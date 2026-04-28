@@ -20,7 +20,7 @@ const MediaImagePicker = ({ image, onImageSelect }: Props) => {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [16, 9], // ✅ matches the 16:9 ratio from HTML
       quality: 0.8,
