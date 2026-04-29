@@ -1,8 +1,8 @@
 import { Colors } from "@/constant/colors";
 import React from "react";
 import { Image, useColorScheme } from "react-native";
-import DarkLogo from "../assets/img/logo_dark.png";
-import LightLogo from "../assets/img/logo_light.png";
+import DarkLogo from "../assets/img/logo-dark_extra.png";
+import LightLogo from "../assets/img/logo-light_extra.png";
 
 export type ThemedLogoProps = {
   style: any;
