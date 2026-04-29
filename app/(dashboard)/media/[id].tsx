@@ -39,7 +39,8 @@ const Pill = ({ icon, label }: { icon: string; label: string }) => (
 // ── main ─────────────────────────────────────────────────
 const MediaDetail = () => {
   const [media, setMedia] = React.useState<MediaItem | null>(null);
-  const [deleting, setDeleting] = React.useState(false);
+  // const [deleting, setDeleting] = React.useState(false);
+  const [deletingId, setDeletingId] = React.useState<string | null>(null);
   const router = useRouter();
 
   const { id } = useLocalSearchParams();
@@ -59,8 +60,13 @@ const MediaDetail = () => {
 
   const handleDelete = async () => {
     if (!media) return;
-    setDeleting(true);
+
+    setDeletingId(media.$id);
+
     await deleteMedia(media.$id);
+
+    setDeletingId(null);
+
     router.replace("/library");
   };
 
@@ -200,11 +206,11 @@ const MediaDetail = () => {
               <TouchableOpacity
                 style={[styles.secondaryBtn, styles.deleteBtn]}
                 onPress={handleDelete}
-                disabled={deleting}
+                disabled={deletingId === media.$id}
                 activeOpacity={0.8}
               >
                 <ThemedText style={styles.deleteBtnText}>
-                  {deleting ? "Deleting..." : "🗑  Delete"}
+                  {deletingId ? "Deleting..." : "🗑  Delete"}
                 </ThemedText>
               </TouchableOpacity>
             </View>

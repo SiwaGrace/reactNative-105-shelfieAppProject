@@ -15,7 +15,7 @@ const Home = () => {
       <ThemedText title={true} style={styles.title}>
         The Number 1
       </ThemedText>
-      <ThemedText>Reading List App</ThemedText>
+      <ThemedText>Media Tracker App</ThemedText>
 
       <Spacer />
 
@@ -32,7 +32,7 @@ const Home = () => {
       <Spacer height={10} />
 
       <Link href="/profile">
-        <ThemedText style={styles.link}>profile </ThemedText>
+        <ThemedText style={styles.link}>Home</ThemedText>
       </Link>
     </ThemedView>
   );

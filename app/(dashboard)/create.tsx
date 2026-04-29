@@ -19,6 +19,7 @@ import ThemedTextSelect from "@/components/ThemedTextSelect";
 import ThemedView from "@/components/ThemedView";
 import { Colors } from "@/constant/colors";
 import { useMedia } from "@/hooks/useMedia";
+import { uploadImageToCloudinary } from "@/lib/cloudinary";
 import {
   MEDIA_STATUS,
   MEDIA_TYPES,
@@ -41,6 +42,7 @@ const Create = () => {
   const [metadata, setMetadata] = React.useState<number>(0);
   const [image, setImage] = React.useState<string | null>(null);
 
+  const [loadingImage, setLoadingImage] = React.useState(false);
   // just a helper — reads the selected type and returns the right label
   const metadataLabel = type === "anime" ? "Episodes" : "Chapters";
 
@@ -78,48 +80,118 @@ const Create = () => {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
+  const fetchImage = async () => {
+    if (!title.trim()) {
+      alert("Enter a title first");
+      return;
+    }
+
+    try {
+      setLoadingImage(true);
+
+      let url = "";
+
+      if (type === "anime" || type === "manhwa") {
+        url = `https://api.jikan.moe/v4/${type}?q=${title}&limit=1`;
+      } else {
+        url = `https://www.googleapis.com/books/v1/volumes?q=${title}`;
+      }
+
+      const res = await fetch(url);
+      const data = await res.json();
+
+      let img = null;
+
+      if (type === "anime" || type === "manhwa") {
+        img = data?.data?.[0]?.images?.jpg?.image_url;
+      } else {
+        const book = data?.items?.[0];
+
+        img = book?.volumeInfo?.imageLinks?.thumbnail;
+
+        // 👇 ADD THIS
+        const authorName = book?.volumeInfo?.authors?.[0];
+        if (!author && authorName) {
+          setAuthor(authorName);
+        }
+      }
+
+      if (img) {
+        setImage(img);
+      } else {
+        alert("No image found. Try another title.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to fetch image");
+    } finally {
+      setLoadingImage(false);
+    }
+  };
+
   const handleSubmit = async () => {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    if (!title || !type || !status) {
-      alert("Please fill required fields");
+      if (!title || !type || !status) {
+        alert("Please fill required fields");
+        setLoading(false);
+        return;
+      }
+
+      let imageUrl: string | undefined = undefined;
+
+      // if (image) {
+      //   imageUrl = await uploadImageToCloudinary(image);
+      // }
+
+      if (image) {
+        if (image.startsWith("http")) {
+          imageUrl = image; // already a URL from API
+        } else {
+          imageUrl = await uploadImageToCloudinary(image);
+        }
+      }
+
+      // URL validation now lives inside handleSubmit
+      if (link && !isValidUrl(link)) {
+        alert("Please enter a valid URL");
+        setLoading(false);
+        return;
+      }
+
+      await createMedia({
+        title,
+        description,
+        author,
+        type,
+        status,
+        link,
+        rating: ratings,
+        tags,
+        image: imageUrl,
+        episodes: type === "anime" ? metadata : undefined,
+        chapters: type !== "anime" ? metadata : undefined,
+      });
+
+      setTitle("");
+      setDescription("");
+      setAuthor("");
+      setTagInput("");
+      setLink("");
+      setRatings(0);
+      setTags([]);
+      setMetadata(0);
+      setImage(null);
+
+      router.replace("/library");
+      // setLoading(false);
+    } catch (error) {
+      alert("Something went wrong.");
+      console.error(error);
+    } finally {
       setLoading(false);
-      return;
     }
-
-    // URL validation now lives inside handleSubmit
-    if (link && !isValidUrl(link)) {
-      alert("Please enter a valid URL");
-      setLoading(false);
-      return;
-    }
-
-    await createMedia({
-      title,
-      description,
-      author,
-      type,
-      status,
-      link,
-      rating: ratings,
-      tags,
-      image: image ?? undefined,
-      episodes: type === "anime" ? metadata : undefined,
-      chapters: type !== "anime" ? metadata : undefined,
-    });
-
-    setTitle("");
-    setDescription("");
-    setAuthor("");
-    setTagInput("");
-    setLink("");
-    setRatings(0);
-    setTags([]);
-    setMetadata(0);
-    setImage(null);
-
-    router.replace("/library");
-    setLoading(false);
   };
 
   return (
@@ -142,6 +214,23 @@ const Create = () => {
             value={title}
             onChangeText={setTitle}
           />
+
+          <Spacer />
+
+          <TouchableOpacity
+            onPress={fetchImage}
+            disabled={loadingImage}
+            style={{
+              backgroundColor: Colors.primary,
+              paddingVertical: 10,
+              paddingHorizontal: 20,
+              borderRadius: 10,
+            }}
+          >
+            <ThemedText style={{ color: "white" }}>
+              {loadingImage ? "Fetching..." : "Fetch Image"}
+            </ThemedText>
+          </TouchableOpacity>
 
           <Spacer />
           <ThemedTextInput
@@ -178,7 +267,13 @@ const Create = () => {
             style={styles.input}
             placeholder={`Number of ${metadataLabel}`}
             value={metadata === 0 ? "" : String(metadata)}
-            onChangeText={(text) => setMetadata(Number(text))}
+            onChangeText={(text) =>
+              // setMetadata(Number(text))
+              {
+                const num = parseInt(text);
+                setMetadata(isNaN(num) ? 0 : num);
+              }
+            }
             keyboardType="numeric"
           />
 
